@@ -7,12 +7,15 @@ public class ConverterApp {
 
     private JFrame frame;
 
+    //both converters
     private Converter[] converters = {
-        new CurrencyConverter()
+        new CurrencyConverter(),
+        new TemperatureConverter()
     };
 
     private Converter activeConverter;
 
+    private JComboBox<String> categoryBox;
     private JComboBox<String> fromUnitBox;
     private JComboBox<String> toUnitBox;
     private JTextField inputField;
@@ -22,7 +25,7 @@ public class ConverterApp {
     public void show() {
         frame = new JFrame("Unit Converter");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 380);
+        frame.setSize(500, 420);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setLayout(new BorderLayout());
@@ -59,8 +62,19 @@ public class ConverterApp {
         gbc.fill    = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // Amount input
+        //category dropdown
         gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(styledLabel("Category:"), gbc);
+
+        gbc.gridx = 1;
+        String[] categoryNames = {"Currency", "Temperature"};
+        categoryBox = new JComboBox<>(categoryNames);
+        styleComboBox(categoryBox);
+        categoryBox.addActionListener(e -> onCategoryChanged());
+        panel.add(categoryBox, gbc);
+
+        //amount input
+        gbc.gridx = 0; gbc.gridy = 1;
         panel.add(styledLabel("Amount:"), gbc);
 
         gbc.gridx = 1;
@@ -72,8 +86,8 @@ public class ConverterApp {
         ));
         panel.add(inputField, gbc);
 
-        // From unit
-        gbc.gridx = 0; gbc.gridy = 1;
+        //from unit
+        gbc.gridx = 0; gbc.gridy = 2;
         panel.add(styledLabel("From:"), gbc);
 
         gbc.gridx = 1;
@@ -81,8 +95,8 @@ public class ConverterApp {
         styleComboBox(fromUnitBox);
         panel.add(fromUnitBox, gbc);
 
-        // To unit
-        gbc.gridx = 0; gbc.gridy = 2;
+        //to unit
+        gbc.gridx = 0; gbc.gridy = 3;
         panel.add(styledLabel("To:"), gbc);
 
         gbc.gridx = 1;
@@ -90,8 +104,8 @@ public class ConverterApp {
         styleComboBox(toUnitBox);
         panel.add(toUnitBox, gbc);
 
-        // Convert button
-        gbc.gridx = 0; gbc.gridy = 3;
+        //convert button
+        gbc.gridx = 0; gbc.gridy = 4;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(16, 8, 4, 8);
         JButton convertBtn = new JButton("Convert");
@@ -131,13 +145,23 @@ public class ConverterApp {
         return panel;
     }
 
+    //called when user changes category
+    private void onCategoryChanged() {
+        int index = categoryBox.getSelectedIndex();
+        activeConverter = converters[index];
+        updateUnitBoxes();
+        resultLabel.setText("—");
+        resultUnitLabel.setText("");
+        inputField.setText("");
+    }
+
     private void updateUnitBoxes() {
         String[] units = activeConverter.getUnits();
 
         fromUnitBox.removeAllItems();
         toUnitBox.removeAllItems();
 
-        for (String unit : units)  {
+        for (String unit : units) {
             fromUnitBox.addItem(unit);
             toUnitBox.addItem(unit);
         }
@@ -165,6 +189,7 @@ public class ConverterApp {
             else
                 resultLabel.setText(String.format("%.4f", result));
 
+            //show full name for currency, unit name for everything else
             if (activeConverter instanceof CurrencyConverter) {
                 CurrencyConverter cc = (CurrencyConverter) activeConverter;
                 resultUnitLabel.setText(cc.getFullName(toUnit));
