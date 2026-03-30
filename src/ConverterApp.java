@@ -6,25 +6,21 @@ import java.awt.*;
 public class ConverterApp {
 
     private JFrame frame;
-
-    private Converter[] converters = {
-        new CurrencyConverter(),
-        new TemperatureConverter(),
-        new DistanceConverter(),
-        new WeightConverter()
-    };
-
     private Converter activeConverter;
 
-    private JComboBox<String> categoryBox;
     private JComboBox<String> fromUnitBox;
     private JComboBox<String> toUnitBox;
     private JTextField inputField;
     private JLabel resultLabel;
     private JLabel resultUnitLabel;
 
+    // Constructor now accepts whichever converter was selected on welcome screen
+    public ConverterApp(Converter converter) {
+        this.activeConverter = converter;
+    }
+
     public void show() {
-        frame = new JFrame("Unit Converter");
+        frame = new JFrame("Unit Converter - " + activeConverter.getCategoryName());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 420);
         frame.setLocationRelativeTo(null);
@@ -35,7 +31,6 @@ public class ConverterApp {
         frame.add(buildMainPanel(),   BorderLayout.CENTER);
         frame.add(buildResultPanel(), BorderLayout.SOUTH);
 
-        activeConverter = converters[0];
         updateUnitBoxes();
 
         frame.setVisible(true);
@@ -46,9 +41,24 @@ public class ConverterApp {
         panel.setBackground(new Color(0, 128, 128));
         panel.setBorder(BorderFactory.createEmptyBorder(14, 20, 14, 20));
 
-        JLabel title = new JLabel("Unit Converter");
+        JLabel title = new JLabel(activeConverter.getCategoryName() + " Converter");
         title.setFont(new Font("Segoe UI", Font.BOLD, 20));
         title.setForeground(Color.WHITE);
+
+        JButton backBtn = new JButton("← Back");
+        backBtn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        backBtn.setBackground(new Color(0, 100, 100));
+        backBtn.setForeground(Color.WHITE);
+        backBtn.setFocusPainted(false);
+        backBtn.setBorderPainted(false);
+        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backBtn.addActionListener(e -> {
+            frame.dispose();
+            WelcomeScreen welcome = new WelcomeScreen();
+            welcome.show();
+        });
+
+        panel.add(backBtn);
         panel.add(title);
         return panel;
     }
@@ -63,19 +73,8 @@ public class ConverterApp {
         gbc.fill    = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // Category dropdown
-        gbc.gridx = 0; gbc.gridy = 0;
-        panel.add(styledLabel("Category:"), gbc);
-
-        gbc.gridx = 1;
-        String[] categoryNames = {"Currency", "Temperature", "Distance", "Weight"};
-        categoryBox = new JComboBox<>(categoryNames);
-        styleComboBox(categoryBox);
-        categoryBox.addActionListener(e -> onCategoryChanged());
-        panel.add(categoryBox, gbc);
-
         // Amount input
-        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.gridx = 0; gbc.gridy = 0;
         panel.add(styledLabel("Amount:"), gbc);
 
         gbc.gridx = 1;
@@ -88,7 +87,7 @@ public class ConverterApp {
         panel.add(inputField, gbc);
 
         // From unit
-        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridx = 0; gbc.gridy = 1;
         panel.add(styledLabel("From:"), gbc);
 
         gbc.gridx = 1;
@@ -97,7 +96,7 @@ public class ConverterApp {
         panel.add(fromUnitBox, gbc);
 
         // To unit
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0; gbc.gridy = 2;
         panel.add(styledLabel("To:"), gbc);
 
         gbc.gridx = 1;
@@ -106,7 +105,7 @@ public class ConverterApp {
         panel.add(toUnitBox, gbc);
 
         // Convert button
-        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridx = 0; gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(16, 8, 4, 8);
         JButton convertBtn = new JButton("Convert");
@@ -144,15 +143,6 @@ public class ConverterApp {
         panel.add(resultLabel);
         panel.add(resultUnitLabel);
         return panel;
-    }
-
-    private void onCategoryChanged() {
-        int index = categoryBox.getSelectedIndex();
-        activeConverter = converters[index];
-        updateUnitBoxes();
-        resultLabel.setText("—");
-        resultUnitLabel.setText("");
-        inputField.setText("");
     }
 
     private void updateUnitBoxes() {
@@ -214,5 +204,4 @@ public class ConverterApp {
         box.setBackground(Color.WHITE);
         box.setBorder(BorderFactory.createLineBorder(new Color(0, 150, 150)));
     }
-
 }
