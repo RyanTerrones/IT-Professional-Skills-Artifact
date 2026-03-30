@@ -7,10 +7,10 @@ public class ConverterApp {
 
     private JFrame frame;
 
-    //both converters
     private Converter[] converters = {
         new CurrencyConverter(),
-        new TemperatureConverter()
+        new TemperatureConverter(),
+        new DistanceConverter()
     };
 
     private Converter activeConverter;
@@ -62,18 +62,18 @@ public class ConverterApp {
         gbc.fill    = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        //category dropdown
+        // Category dropdown
         gbc.gridx = 0; gbc.gridy = 0;
         panel.add(styledLabel("Category:"), gbc);
 
         gbc.gridx = 1;
-        String[] categoryNames = {"Currency", "Temperature"};
+        String[] categoryNames = {"Currency", "Temperature", "Distance"};
         categoryBox = new JComboBox<>(categoryNames);
         styleComboBox(categoryBox);
         categoryBox.addActionListener(e -> onCategoryChanged());
         panel.add(categoryBox, gbc);
 
-        //amount input
+        // Amount input
         gbc.gridx = 0; gbc.gridy = 1;
         panel.add(styledLabel("Amount:"), gbc);
 
@@ -86,7 +86,7 @@ public class ConverterApp {
         ));
         panel.add(inputField, gbc);
 
-        //from unit
+        // From unit
         gbc.gridx = 0; gbc.gridy = 2;
         panel.add(styledLabel("From:"), gbc);
 
@@ -95,7 +95,7 @@ public class ConverterApp {
         styleComboBox(fromUnitBox);
         panel.add(fromUnitBox, gbc);
 
-        //to unit
+        // To unit
         gbc.gridx = 0; gbc.gridy = 3;
         panel.add(styledLabel("To:"), gbc);
 
@@ -104,7 +104,7 @@ public class ConverterApp {
         styleComboBox(toUnitBox);
         panel.add(toUnitBox, gbc);
 
-        //convert button
+        // Convert button
         gbc.gridx = 0; gbc.gridy = 4;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(16, 8, 4, 8);
@@ -145,7 +145,6 @@ public class ConverterApp {
         return panel;
     }
 
-    //called when user changes category
     private void onCategoryChanged() {
         int index = categoryBox.getSelectedIndex();
         activeConverter = converters[index];
@@ -189,7 +188,6 @@ public class ConverterApp {
             else
                 resultLabel.setText(String.format("%.4f", result));
 
-            //show full name for currency, unit name for everything else
             if (activeConverter instanceof CurrencyConverter) {
                 CurrencyConverter cc = (CurrencyConverter) activeConverter;
                 resultUnitLabel.setText(cc.getFullName(toUnit));

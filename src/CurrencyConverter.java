@@ -2,8 +2,8 @@ package converter;
  
 public class CurrencyConverter extends Converter {
  
-	// Fixed exchange rates relative to EUR as the base currency
-	// rates are approximate as of early 2025
+	//fixed exchange rates relative to EUR as the base currency
+	//rates are approximate as of early 2025
 	private static final double EUR_TO_USD = 1.08;
 	private static final double EUR_TO_GBP = 0.86;
 	private static final double EUR_TO_JPY = 162.50;
@@ -26,13 +26,13 @@ public class CurrencyConverter extends Converter {
  
 	@Override
 	public double convert(double value, String fromUnit, String toUnit) {
-		// Step 1: convert input to EUR (base currency)
+		//convert input to EUR (base currency)
 		double inEuro = toEuro(value, fromUnit);
-		// Step 2: convert EUR to target unit
+		//convert EUR to target unit
 		return fromEuro(inEuro, toUnit);
 	}
  
-	// Converts any supported currency to EUR
+	//converts any supported currency to EUR
 	private double toEuro(double value, String unit) {
 		switch (unit) {
 			case "EUR": 
@@ -60,7 +60,7 @@ public class CurrencyConverter extends Converter {
 		}
 	}
  
-	// Converts EUR to any supported currency
+	//converts EUR to any supported currency
 	private double fromEuro(double euro, String unit) {
 		switch (unit) {
 			case "EUR": 
@@ -87,6 +87,7 @@ public class CurrencyConverter extends Converter {
 		}
 	}
 	
+	//gets full name of currency
 	public String getFullName(String unit) {
 	    switch (unit) {
 	        case "EUR": 
