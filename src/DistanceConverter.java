@@ -14,9 +14,9 @@ public class DistanceConverter extends Converter {
 
     @Override
     public double convert(double value, String fromUnit, String toUnit) {
-        // Step 1: convert input to metres (base unit)
+        //convert input to metres (base unit)
         double inMetres = toMetres(value, fromUnit);
-        // Step 2: convert metres to target unit
+        //convert metres to target unit
         return fromMetres(inMetres, toUnit);
     }
 

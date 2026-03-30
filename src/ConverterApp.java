@@ -10,7 +10,8 @@ public class ConverterApp {
     private Converter[] converters = {
         new CurrencyConverter(),
         new TemperatureConverter(),
-        new DistanceConverter()
+        new DistanceConverter(),
+        new WeightConverter()
     };
 
     private Converter activeConverter;
@@ -67,7 +68,7 @@ public class ConverterApp {
         panel.add(styledLabel("Category:"), gbc);
 
         gbc.gridx = 1;
-        String[] categoryNames = {"Currency", "Temperature", "Distance"};
+        String[] categoryNames = {"Currency", "Temperature", "Distance", "Weight"};
         categoryBox = new JComboBox<>(categoryNames);
         styleComboBox(categoryBox);
         categoryBox.addActionListener(e -> onCategoryChanged());
